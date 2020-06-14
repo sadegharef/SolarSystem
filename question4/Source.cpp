@@ -1,110 +1,314 @@
-#include<gl/glut.h>
-#include <cmath>
+#include<stdio.h>
+#include<stdlib.h>
+#include <GL/glut.h>
+#include<math.h>
+#include<time.h>
+#include<windows.h>
+#define PI 3.14
+float angleMoon = 0.0, angleEarth = 0.0, angleAstroid = 0.0,
+angleMars = 0.0,
+angleMercury = 0.0,
+angleVenus = 0.0,
+angleJupiter = 0.0,
+angleSaturn = 0.0,
+angleUranus = 30.0,
+angleNeptune = 60.0;
+GLfloat sx = 0.2, sy = 0.2, sz = 0.2;
+int planet1;
+GLfloat black[] = { 0.0f,0.0f,0.0f,1.0f };
+GLfloat white[] = { 1.0f,1.0f,1.0f,1.0f };
+GLfloat blue[] = { 0.0f,0.0f,0.9f,1.0f };
+GLfloat er[] = { 0.0f,5.0f,0.9f,1.0f };
+GLfloat yellow[] = { 0.7f,0.2f,0.0f,1.0f };
+GLfloat qAmb[] = { 0.1,0.1,0.1,1.0 };
+GLfloat qDif[] = { 1.0,1.0,1.0,1.0 };
+GLfloat qSpec[] = { .50,.50,.50,.10 };
+GLfloat qPos[] = { 0,0,0,0.1 };
+GLfloat sc[8] = { 0.295 , 0.40,0.50, 0.60,0.80,1.0,1.05,1.13 };
+double ang = 2 * PI / 300;
+double angular = 2 * PI / 50;
 
-// Rotation angles
-static GLfloat sun_theta = 0;
-static GLfloat earth_theta = 0;
-static GLfloat earth_theta_2 = 0;
-static GLfloat moon_theta = 0;
-static GLfloat moon_theta_2 = 0;
-static GLfloat moon_theta_3 = 0;
-static GLfloat p2_theta = 0;
-static GLfloat p2_theta_2 = 0;
 
-void init() {
-	glClearColor(0, 0, 0, 0);
-	glShadeModel(GL_FLAT);
+void initLighting()
+{
+    //glMaterialfv(GL_FRONT,GL_AMBIENT,yellow);
+    //glMaterialfv(GL_FRONT,GL_SPECULAR,yellow);
+    glEnable(GL_LIGHTING);
+    glEnable(GL_LIGHT7);
 
-	GLfloat light0_position[] = { -1.0, 1.0, 1.0, 0 }; // Light_0 position
-	glLightfv(GL_LIGHT0, GL_POSITION, light0_position); // Define Light_0 
+    glLightfv(GL_LIGHT7, GL_AMBIENT, qAmb);
+    glLightfv(GL_LIGHT7, GL_DIFFUSE, qDif);
+    glLightfv(GL_LIGHT7, GL_SPECULAR, qSpec);
+    //glMaterialfv(GL_FRONT,GL_DIFFUSE,yellow);
+}
+void myinit()
+{
+    glClearColor(0.0, 0.0, 0.0, 0.0); //backgroundcolor is green
+    //gluOrtho2D(0,699,0,699);
+    glPointSize(1.0);
+    glLineWidth(2.0);
 
-	glEnable(GL_LIGHTING); // Enable Lighting
-	glEnable(GL_LIGHT0); // Enable Light_0
-	glEnable(GL_DEPTH_TEST); // Enable Depth
 }
 
-void display() {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-	// Sun
-	glPushMatrix();
-	glRotatef(sun_theta, 0, 1, 0); // Rotation around itself, around y axis
-	//glutWireSphere(5, 20, 16);
-	glutSolidSphere(5, 20, 16); // Define Sphere, r=5
-	glPopMatrix();
-
-	// Earth
-	glPushMatrix();
-	glRotatef(earth_theta_2, 0, 1, 0); // Rotation around the sun, around y axis
-	glTranslated(12, 0, 0); // Move away from sun
-	glRotatef(earth_theta, 0, 1, 0); // Roatation around itself, around y axis
-	//glutWireSphere(3, 20, 16);
-	glutSolidSphere(3, 20, 16); // Define Sphere, r=3
-	glPopMatrix();
-
-	// Moon
-	glPushMatrix();
-	glRotatef(moon_theta_3, 0, 1, 0); // Roatation around sun (with earth), around y axis
-	glTranslated(12, 0, 0); // Move near earth
-	glRotatef(moon_theta_2, 1, 0, 0); // Roatation around earth, around z axis
-	glTranslated(0, 5, 0); // Move away from sun
-	glRotatef(moon_theta, 1, 0, 0); // Rotation around itself, around x axis
-	//glutWireSphere(1, 20, 16);
-	glutSolidSphere(0.5, 20, 16); // Define Sphere, r=0.5
-	glPopMatrix();
-
-	// Planet 2
-	glPushMatrix();
-	//glRotatef(earth_theta_2, 0, 1, 0); // Rotation around the sun, around y axis
-	glTranslatef(8 * cos(p2_theta_2), 0, 6 * sin(p2_theta_2)); // Rotation in oval path, it's cordinates of object in each time update.
-	//glTranslated(5, 0, 0); // Move away from sun
-	glRotatef(p2_theta, 0, 1, 0); // Roatation around itself, around y axis
-	//glutWireSphere(3, 20, 16);
-	glutSolidSphere(1, 20, 16); // Define Sphere, r=1
-	glPopMatrix();
-
-	glutSwapBuffers();
+void background()
+{
+    glBegin(GL_QUADS);
+    glColor3f(0.0, 0.00, 0.00);
+    glVertex3f(-01.00, 01.00, 1);
+    glColor3f(.20, 0.0, 0.70);
+    glVertex3f(01.00, 1.00, 1);
+    glColor3f(0, 0.0, 0.0);
+    glVertex3f(1.00, -1.00, 1);
+    glColor3f(.70, .10, .20);
+    glVertex3f(-1.00, -1.00, 1);
+    glEnd();
 }
 
-void reshape(int w, int h) {
-	// Projection
-	glViewport(0, 0, (GLsizei)w, (GLsizei)h);
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-	gluPerspective(90, 1, 1.0, 40.0);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
-	//glTranslatef(x, y, z);
-	gluLookAt(0.0, 20.0, 10.0, // Camera position
-		0.0, 0.0, 0.0, // Point the Camera looks at
-		0.0, 1.0, 0.0); // Up-vector
+void orbit()
+{
+    glColor3f(0.5, 0.5, 0.5);
+
+
+    int i = 0;
+    for (i = 0; i < 8; i++) {
+        glPushMatrix();
+        if (i == 5)
+        {
+            glRotatef(45, 1.0, 0.0, 0.0);
+        }
+        else
+        {
+            glRotatef(63, 1.0, 0.0, 0.0);
+        }
+        glScalef(sc[i], sc[i], sc[i]);
+        glBegin(GL_POINTS);
+        double ang1 = 0.0;
+        int i = 0;
+        for (i = 0; i < 300; i++)
+        {
+            glVertex2d(cos(ang1), sin(ang1));
+            ang1 += ang;
+        }
+        glEnd();
+        glPopMatrix();
+    }
 }
 
-void timer(int v) {
-	// Updata movement parameters
-	sun_theta += 1;
-	earth_theta += 3;
-	earth_theta_2 += 1;
-	moon_theta += 1;
-	moon_theta_2 += 3;
-	moon_theta_3 += 1;
-	p2_theta += 3;
-	p2_theta_2 += 0.3;
+void draw(void)
+{
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    background();
+    orbit();
+    glLoadIdentity();
+    glPushMatrix();
+    glEnable(GL_DEPTH_TEST);
+    glEnable(GL_COLOR_MATERIAL);
+    glPushMatrix();
+    glColor3f(0.7, 0.5, 0.0);
+    glScalef(sx, sy, sz);
+    glLightfv(GL_LIGHT7, GL_POSITION, qPos);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, yellow);
+    glutSolidSphere(1, 50, 50);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
+    glPopMatrix();
 
-	glutPostRedisplay();
-	glutTimerFunc(100, timer, 0);
+    glScalef(0.2, 0.2, 0.2);
+    glPushMatrix();
+    glRotatef(angleMercury, 0.0, 1.0, -0.5);
+    glTranslatef(1.5, 0.0, 0.0);
+    glColor3f(1.0, 0.9, 0.0);
+    glScalef(0.08, 0.08, 0.08);
+    glutSolidSphere(1, 50, 50);
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(angleVenus, 0.0, 1.0, -0.5);
+    glTranslatef(2.0, 0.0, 0.0);
+    glColor3f(0.9, 0.1, 0.0);
+    glScalef(0.1, 0.1, 0.1);
+    glutSolidSphere(1, 50, 50);
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(angleEarth, 0.0, 1.0, -0.5);
+    glTranslatef(2.5, 0.0, 0.0);
+    glColor3f(0.0, 0.1, 0.7);
+    glScalef(0.23, 0.23, 0.23);
+    glutSolidSphere(1, 50, 50);
+    glPushMatrix();
+    glRotatef(angleMoon, 0.0, 0.1, 0.05);
+    glTranslatef(1.3, 0.0, 0.0);
+    glColor3f(1.0, 1.0, 1.0);
+    glScalef(0.5, 0.5, 0.5);
+    glutSolidSphere(0.5, 50, 50);
+    glPopMatrix();//moon made
+    glPopMatrix();//earth made
+
+    glPushMatrix();
+    glRotatef(angleMars, 0.0, 1.0, -0.5);
+    glTranslatef(-3.0, 0.0, 0.0);
+    glColor3f(0.05, 0.05, 0.01);
+    glScalef(0.17, 0.17, 0.17);
+    glutSolidSphere(1, 50, 50);
+    glPopMatrix();
+
+    glPushMatrix();
+    glColor3f(3.30, 3.30, 3.30);
+    glRotatef(63, 1.0, 0.0, 0.0);
+    int j = 0, i = 0, div = 90; float siz = 2;
+    float scl[4] = { 3.3,3.4,3.35,3.2 };
+    for (j = 0; j < 4; j++)
+    {
+        glPushMatrix(); siz -= 0.3;
+        glPointSize(siz);
+        glScalef(scl[j], scl[j], scl[j]);
+        glBegin(GL_POINTS);
+        double ang1 = 0.0 - angleAstroid, a = (2 * PI) / div;
+        for (i = 0; i < div; i++)
+        {
+            glVertex2d(cos(ang1), sin(ang1));
+            ang1 += a;
+        }
+        div += 10;
+        glEnd();
+        glPopMatrix();
+    }
+    glPopMatrix();//astroid made
+
+    glPushMatrix();
+    glRotatef(angleJupiter, 0.0, 1.0, -0.5);
+    glTranslatef(-4.0, 0.0, 0.0);
+    glColor3f(0.4, 0.2, 0.0);
+    glScalef(0.5, 0.5, 0.5);
+    glutSolidSphere(1, 50, 50);
+    glPushMatrix();
+    glRotatef(angleMoon, 1.0, -0.5, 0.0);
+    glTranslatef(0.0, 0, 1.1);
+    glColor3f(1.0, 1.0, 1.0);
+    glScalef(0.1, 0.1, 0.1);
+    glutSolidSphere(0.5, 50, 50);
+    glPopMatrix();//moon made
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(angleSaturn, 0.0, 1.0, -1.0);
+    glTranslatef(-5.0, 0.0, 0.0);
+    glColor3f(0.9, 0.0, 0.0);
+    glScalef(0.4, 0.4, 0.4);
+    glutSolidSphere(1, 50, 50);
+    glPushMatrix();
+    glRotatef(45, 1.0, 0.0, 0.0);
+    glPointSize(3);
+    glColor3f(5.0, 3.0, 1.0);
+    glScalef(1.2, 1.2, 1.2);
+    glBegin(GL_POINTS);
+    double ang1 = 0.0;
+    i = 0;
+    for (i = 0; i < 50; i++)
+    {
+        glVertex2d(cos(ang1), sin(ang1));
+        ang1 += angular;
+    }
+    glEnd();
+
+    glPointSize(2);
+    glPopMatrix();//ring made
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(angleUranus, 0.0, 1.0, -0.5);
+    glTranslatef(5.2, 0.0, 0.0);
+    glColor3f(0.0, 0.5, 0.9);
+    glScalef(0.23, 0.23, 0.23);
+    glutSolidSphere(1, 50, 50);
+    glPopMatrix();
+
+    glPushMatrix();
+    glRotatef(angleNeptune, 0.0, 1.0, -0.5);
+    glTranslatef(-5.7, 0.0, 0.0);
+    glColor3f(0.0, 0.0, 0.9);
+    glScalef(0.2, 0.2, 0.2);
+    glutSolidSphere(1, 50, 50);
+    glPopMatrix();
+
+
+    glPopMatrix();
+    glFlush();
 }
 
-int main(int argc, char** argv) {
-	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(500, 500);
-	glutInitWindowPosition(100, 100);
-	glutCreateWindow("SolarSystem");
-	init();
-	glutDisplayFunc(display); // Scene
-	glutReshapeFunc(reshape); // Projection
-	glutTimerFunc(100, timer, 0); // Timer, call each 100 ms
-	glutMainLoop();
-	return 0;
+
+void update(int value) {
+
+    if ((angleMoon >= 0 && angleMoon < 180))
+    {
+        sx -= 0.0003; sy -= 0.0003; sz -= 0.0003;
+    }
+    else { sx += 0.0003; sy += 0.0003; sz += 0.0003; }
+
+
+    angleMoon += 2;
+    if (angleMoon > 360) {
+        angleMoon -= 360;
+    }
+    angleEarth += 0.7;
+    if (angleEarth > 360) {
+        angleEarth -= 360;
+    }
+    angleMercury += 2;
+    if (angleMercury > 360) {
+        angleMercury -= 360;
+    }
+    angleVenus += 0.9;
+    if (angleVenus > 360) {
+        angleVenus -= 360;
+    }
+    angleMars += 0.5;
+    if (angleMars > 360) {
+        angleMars -= 360;
+    }
+    angleJupiter += 0.2;
+    if (angleJupiter > 360) {
+        angleJupiter -= 360;
+    }
+    angleSaturn += 0.1;
+    if (angleSaturn > 360) {
+        angleSaturn -= 360;
+    }
+
+
+    angleUranus += 0.05;
+    if (angleUranus > 360) {
+        angleUranus -= 360;
+    }
+
+
+    angleNeptune += 0.02;
+    if (angleNeptune > 360) {
+        angleNeptune -= 360;
+    }
+
+
+    angleAstroid += 0.002;
+    if (angleAstroid > 360) {
+        angleAstroid -= 360;
+    }
+
+
+    glutPostRedisplay();
+    glutTimerFunc(20, update, 0);
+}
+
+int main(int argc, char** argv)
+{
+    glutInit(&argc, argv);
+    glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB);
+    glutInitWindowPosition(0, 0);
+    glutInitWindowSize(700, 700);
+    glutCreateWindow("Solar System");
+    initLighting();
+    myinit();
+    glutDisplayFunc(draw);
+    glutTimerFunc(25, update, 0);
+    glutMainLoop();
+    return 0;
 }
