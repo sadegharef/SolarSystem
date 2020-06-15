@@ -104,37 +104,46 @@ void draw(void)
     background();
     //orbit();
     glLoadIdentity();
-    glPushMatrix();
+    //glPushMatrix();//remove the push blet
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_COLOR_MATERIAL);
+    glScalef(0.08, 0.08, 0.08);
+    
+
+    //making sun
     glPushMatrix();
-    glColor3f(0.7, 0.5, 0.0);
+    glColor3f(6.0, 3.0, 0.0);
+    glRotatef(angleSun, 0.0, 1.0, 0.0);
     //glScalef(sx, sy, sz);
-    glLightfv(GL_LIGHT7, GL_POSITION, qPos);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, yellow);
-    glutSolidSphere(1, 50, 50);
-    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
+    glutSolidSphere(5, 20, 30);
     glPopMatrix();
 
-    //glScalef(0.2, 0.2, 0.2);
+    
     
     glPushMatrix();
     glRotatef(angleEarth, 0.0, 1.0, -0.5);
-    glTranslatef(2.5, 0.0, 0.0);
+    glTranslatef(10, 0.0, 0.0);
     glColor3f(0.0, 0.1, 0.7);
     //glScalef(0.23, 0.23, 0.23);
-    glutSolidSphere(1, 50, 50);
+    glutSolidSphere(3, 20, 30);
     glPushMatrix();
     glRotatef(angleMoon, 0.0, 0.1, 0.05);
-    glTranslatef(1.3, 0.0, 0.0);
+    glTranslatef(5, 0.0, 0.0);
     glColor3f(1.0, 1.0, 1.0);
     //glScalef(0.5, 0.5, 0.5);
-    glutSolidSphere(0.5, 50, 50);
+    glutSolidSphere(0.5, 20, 30);
     glPopMatrix();//moon made
     glPopMatrix();//earth made
-    glPopMatrix();
+    //glPopMatrix();//remove the pop belt
+    
+    glLightfv(GL_LIGHT7, GL_POSITION, qPos);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, yellow);
+    glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
+
+
     glFlush();
 }
+
 
 
 void update(int value) {
@@ -147,7 +156,10 @@ void update(int value) {
     { 
         sx += 0.0003; sy += 0.0003; sz += 0.0003;
     }
-
+    angleSun += 2;
+    if (angleSun > 360) {
+        angleSun -= 360;
+    }
 
     angleMoon += 2;
     if (angleMoon > 360) {
@@ -159,7 +171,7 @@ void update(int value) {
     }
 
     glutPostRedisplay();
-    glutTimerFunc(20, update, 0);
+    glutTimerFunc(100, update, 0);
 }
 
 int main(int argc, char** argv)
@@ -172,7 +184,10 @@ int main(int argc, char** argv)
     initLighting();
     myinit();
     glutDisplayFunc(draw);
-    glutTimerFunc(25, update, 0);
+    gluLookAt(0.0, 20.0, 10.0, // Camera position
+        0.0, 0.0, 0.0, // Point the Camera looks at
+        0.0, 1.0, 0.0); // Up-vector
+    glutTimerFunc(100, update, 0);
     glutMainLoop();
     return 0;
 }
