@@ -26,7 +26,7 @@ GLfloat yellow[] = { 0.7f, 0.2f, 0.0f, .1f };
 GLfloat qAmb[] = { 0.1f, 0.1f, 0.1f, 0.5f };
 GLfloat qDif[] = { 1.0f, 1.0f, 1.0f, 0.5f };
 GLfloat qSpec[] = { .50f, .50f, .50f, 0.1f };
-GLfloat qPos[] = { 0.0f, 8.0f, 0.01f, 0.001f };
+GLfloat qPos[] = { 0.0f, 0.0f, 0.0f, 8.0f };
 
 //define the belt orbit of planet
 //GLfloat sc[8] = { 0.295 , 0.40,0.50, 0.60,0.80,1.0,1.05,1.13 };
