@@ -8,13 +8,14 @@
 // define the pi number
 #define PI 3.14
 //define the sphere angles
-float 
-angleMoon = 0.0, 
-angleEarth = 0.0, 
+float
+angleMoon_earth = 0.0,
+angleMoon_itself = 0.0,
+angleEarth_sun = 0.0,
+angleEarth_itself = 0.0,
 angleSun = 0.0,
-anglePlanet2 = 0.0;
-//define the scale of the veiw
-GLfloat sx = 0.2, sy = 0.2, sz = 0.2;
+anglePlanet2 = 0.0,
+anglePlanet2_sun = 0.0;
 
 //define the colors
 GLfloat black[] = { 0.0f,0.0f,0.0f,1.0f };
@@ -67,75 +68,52 @@ void background()
     glVertex3f(-1.00, -1.00, 1);
     glEnd();
 }
-//design the belt
-/*void orbit()
-{
-    glColor3f(0.5, 0.5, 0.5);
-
-
-    int i = 0;
-    for (i = 0; i < 8; i++) {
-        glPushMatrix();
-        if (i == 5)
-        {
-            glRotatef(45, 1.0, 0.0, 0.0);
-        }
-        else
-        {
-            glRotatef(63, 1.0, 0.0, 0.0);
-        }
-        //glScalef(sc[i], sc[i], sc[i]);
-        glBegin(GL_POINTS);
-        double ang1 = 0.0;
-        int i = 0;
-        for (i = 0; i < 300; i++)
-        {
-            glVertex2d(cos(ang1), sin(ang1));
-            ang1 += ang;
-        }
-        glEnd();
-        glPopMatrix();
-    }
-}*/
 
 void draw(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     background();
-    //orbit();
+    
     glLoadIdentity();
-    //glPushMatrix();//remove the push blet
+    
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_COLOR_MATERIAL);
-    glScalef(0.08, 0.08, 0.08);
+    glScalef(0.05, 0.05, 0.05);
     
 
     //making sun
     glPushMatrix();
     glColor3f(6.0, 3.0, 0.0);
     glRotatef(angleSun, 0.0, 1.0, 0.0);
-    //glScalef(sx, sy, sz);
-    glutSolidSphere(5, 20, 30);
+    glutSolidSphere(5, 20, 20);
+    glPopMatrix();
+
+    //making planet2
+    glPushMatrix();
+    glColor3f(0, 3.0, 3.0);
+    glRotatef(anglePlanet2_sun, 0.0, 1.0, 0.0);
+    glTranslatef(10 * cos(anglePlanet2_sun), 0, 8 * sin(anglePlanet2_sun));
+    glRotatef(anglePlanet2, 0.0, 1.0, 0.0);
+    glutSolidSphere(2, 20, 20);
     glPopMatrix();
 
     
-    
     glPushMatrix();
-    glRotatef(angleEarth, 0.0, 1.0, -0.5);
-    glTranslatef(10, 0.0, 0.0);
+    glRotatef(angleEarth_sun, 0.0, 1.0, 0.0);
+    glTranslatef(15, 0.0, 0.0);
+    glRotatef(angleEarth_itself, 0.0, 1.0, 0.0);
     glColor3f(0.0, 0.1, 0.7);
-    //glScalef(0.23, 0.23, 0.23);
     glutSolidSphere(3, 20, 30);
     glPushMatrix();
-    glRotatef(angleMoon, 0.0, 0.1, 0.05);
-    glTranslatef(5, 0.0, 0.0);
+    glRotatef(angleMoon_earth, 0.0, 0.0, 1.0);
+    glTranslatef(0.0, 0.0, 5.0);
+    glRotatef(angleMoon_itself, 0.0, 1.0, 0.0);//rotate around itself
     glColor3f(1.0, 1.0, 1.0);
-    //glScalef(0.5, 0.5, 0.5);
     glutSolidSphere(0.5, 20, 30);
-    glPopMatrix();//moon made
-    glPopMatrix();//earth made
-    //glPopMatrix();//remove the pop belt
+    glPopMatrix();
+    glPopMatrix();
     
+    //lighting
     glLightfv(GL_LIGHT7, GL_POSITION, qPos);
     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, yellow);
     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
@@ -148,30 +126,16 @@ void draw(void)
 
 void update(int value) {
 
-    if ((angleMoon >= 0 && angleMoon < 180))
-    {
-        sx -= 0.0003; sy -= 0.0003; sz -= 0.0003;
-    }
-    else
-    { 
-        sx += 0.0003; sy += 0.0003; sz += 0.0003;
-    }
-    angleSun += 2;
-    if (angleSun > 360) {
-        angleSun -= 360;
-    }
-
-    angleMoon += 2;
-    if (angleMoon > 360) {
-        angleMoon -= 360;
-    }
-    angleEarth += 0.7;
-    if (angleEarth > 360) {
-        angleEarth -= 360;
-    }
-
+    angleSun += 1;
+    angleEarth_sun += 1;
+    angleEarth_itself += 3;
+    angleMoon_itself += 1;
+    angleMoon_earth += 3;
+    anglePlanet2 += 3;
+    anglePlanet2_sun -= 0.01;
+   
     glutPostRedisplay();
-    glutTimerFunc(100, update, 0);
+    glutTimerFunc(50, update, 0);
 }
 
 int main(int argc, char** argv)
@@ -184,10 +148,7 @@ int main(int argc, char** argv)
     initLighting();
     myinit();
     glutDisplayFunc(draw);
-    gluLookAt(0.0, 20.0, 10.0, // Camera position
-        0.0, 0.0, 0.0, // Point the Camera looks at
-        0.0, 1.0, 0.0); // Up-vector
-    glutTimerFunc(100, update, 0);
+    glutTimerFunc(50, update, 0);
     glutMainLoop();
     return 0;
 }
