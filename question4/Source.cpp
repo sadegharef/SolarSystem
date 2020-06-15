@@ -109,26 +109,26 @@ void draw(void)
     glEnable(GL_COLOR_MATERIAL);
     glPushMatrix();
     glColor3f(0.7, 0.5, 0.0);
-    glScalef(sx, sy, sz);
+    //glScalef(sx, sy, sz);
     glLightfv(GL_LIGHT7, GL_POSITION, qPos);
     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, yellow);
     glutSolidSphere(1, 50, 50);
     glMaterialfv(GL_FRONT_AND_BACK, GL_EMISSION, black);
     glPopMatrix();
 
-    glScalef(0.2, 0.2, 0.2);
+    //glScalef(0.2, 0.2, 0.2);
     
     glPushMatrix();
     glRotatef(angleEarth, 0.0, 1.0, -0.5);
     glTranslatef(2.5, 0.0, 0.0);
     glColor3f(0.0, 0.1, 0.7);
-    glScalef(0.23, 0.23, 0.23);
+    //glScalef(0.23, 0.23, 0.23);
     glutSolidSphere(1, 50, 50);
     glPushMatrix();
     glRotatef(angleMoon, 0.0, 0.1, 0.05);
     glTranslatef(1.3, 0.0, 0.0);
     glColor3f(1.0, 1.0, 1.0);
-    glScalef(0.5, 0.5, 0.5);
+    //glScalef(0.5, 0.5, 0.5);
     glutSolidSphere(0.5, 50, 50);
     glPopMatrix();//moon made
     glPopMatrix();//earth made
