@@ -1,20 +1,22 @@
+//include the librarys
 #include<stdio.h>
 #include<stdlib.h>
 #include <GL/glut.h>
 #include<math.h>
 #include<time.h>
 #include<windows.h>
+// define the pi number
 #define PI 3.14
-float angleMoon = 0.0, angleEarth = 0.0, angleAstroid = 0.0,
-angleMars = 0.0,
-angleMercury = 0.0,
-angleVenus = 0.0,
-angleJupiter = 0.0,
-angleSaturn = 0.0,
-angleUranus = 30.0,
-angleNeptune = 60.0;
+//define the sphere angles
+float 
+angleMoon = 0.0, 
+angleEarth = 0.0, 
+angleSun = 0.0,
+anglePlanet2 = 0.0;
+//define the scale of the veiw
 GLfloat sx = 0.2, sy = 0.2, sz = 0.2;
-int planet1;
+
+//define the colors
 GLfloat black[] = { 0.0f,0.0f,0.0f,1.0f };
 GLfloat white[] = { 1.0f,1.0f,1.0f,1.0f };
 GLfloat blue[] = { 0.0f,0.0f,0.9f,1.0f };
@@ -24,9 +26,11 @@ GLfloat qAmb[] = { 0.1,0.1,0.1,1.0 };
 GLfloat qDif[] = { 1.0,1.0,1.0,1.0 };
 GLfloat qSpec[] = { .50,.50,.50,.10 };
 GLfloat qPos[] = { 0,0,0,0.1 };
-GLfloat sc[8] = { 0.295 , 0.40,0.50, 0.60,0.80,1.0,1.05,1.13 };
-double ang = 2 * PI / 300;
-double angular = 2 * PI / 50;
+
+//define the belt orbit of planet
+//GLfloat sc[8] = { 0.295 , 0.40,0.50, 0.60,0.80,1.0,1.05,1.13 };
+//double ang = 2 * PI / 300;//for normal planet
+//double angular = 2 * PI / 50;// the belt of uranus
 
 
 void initLighting()
@@ -63,8 +67,8 @@ void background()
     glVertex3f(-1.00, -1.00, 1);
     glEnd();
 }
-
-void orbit()
+//design the belt
+/*void orbit()
 {
     glColor3f(0.5, 0.5, 0.5);
 
@@ -80,7 +84,7 @@ void orbit()
         {
             glRotatef(63, 1.0, 0.0, 0.0);
         }
-        glScalef(sc[i], sc[i], sc[i]);
+        //glScalef(sc[i], sc[i], sc[i]);
         glBegin(GL_POINTS);
         double ang1 = 0.0;
         int i = 0;
@@ -92,13 +96,13 @@ void orbit()
         glEnd();
         glPopMatrix();
     }
-}
+}*/
 
 void draw(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     background();
-    orbit();
+    //orbit();
     glLoadIdentity();
     glPushMatrix();
     glEnable(GL_DEPTH_TEST);
@@ -113,22 +117,7 @@ void draw(void)
     glPopMatrix();
 
     glScalef(0.2, 0.2, 0.2);
-    glPushMatrix();
-    glRotatef(angleMercury, 0.0, 1.0, -0.5);
-    glTranslatef(1.5, 0.0, 0.0);
-    glColor3f(1.0, 0.9, 0.0);
-    glScalef(0.08, 0.08, 0.08);
-    glutSolidSphere(1, 50, 50);
-    glPopMatrix();
-
-    glPushMatrix();
-    glRotatef(angleVenus, 0.0, 1.0, -0.5);
-    glTranslatef(2.0, 0.0, 0.0);
-    glColor3f(0.9, 0.1, 0.0);
-    glScalef(0.1, 0.1, 0.1);
-    glutSolidSphere(1, 50, 50);
-    glPopMatrix();
-
+    
     glPushMatrix();
     glRotatef(angleEarth, 0.0, 1.0, -0.5);
     glTranslatef(2.5, 0.0, 0.0);
@@ -143,95 +132,6 @@ void draw(void)
     glutSolidSphere(0.5, 50, 50);
     glPopMatrix();//moon made
     glPopMatrix();//earth made
-
-    glPushMatrix();
-    glRotatef(angleMars, 0.0, 1.0, -0.5);
-    glTranslatef(-3.0, 0.0, 0.0);
-    glColor3f(0.05, 0.05, 0.01);
-    glScalef(0.17, 0.17, 0.17);
-    glutSolidSphere(1, 50, 50);
-    glPopMatrix();
-
-    glPushMatrix();
-    glColor3f(3.30, 3.30, 3.30);
-    glRotatef(63, 1.0, 0.0, 0.0);
-    int j = 0, i = 0, div = 90; float siz = 2;
-    float scl[4] = { 3.3,3.4,3.35,3.2 };
-    for (j = 0; j < 4; j++)
-    {
-        glPushMatrix(); siz -= 0.3;
-        glPointSize(siz);
-        glScalef(scl[j], scl[j], scl[j]);
-        glBegin(GL_POINTS);
-        double ang1 = 0.0 - angleAstroid, a = (2 * PI) / div;
-        for (i = 0; i < div; i++)
-        {
-            glVertex2d(cos(ang1), sin(ang1));
-            ang1 += a;
-        }
-        div += 10;
-        glEnd();
-        glPopMatrix();
-    }
-    glPopMatrix();//astroid made
-
-    glPushMatrix();
-    glRotatef(angleJupiter, 0.0, 1.0, -0.5);
-    glTranslatef(-4.0, 0.0, 0.0);
-    glColor3f(0.4, 0.2, 0.0);
-    glScalef(0.5, 0.5, 0.5);
-    glutSolidSphere(1, 50, 50);
-    glPushMatrix();
-    glRotatef(angleMoon, 1.0, -0.5, 0.0);
-    glTranslatef(0.0, 0, 1.1);
-    glColor3f(1.0, 1.0, 1.0);
-    glScalef(0.1, 0.1, 0.1);
-    glutSolidSphere(0.5, 50, 50);
-    glPopMatrix();//moon made
-    glPopMatrix();
-
-    glPushMatrix();
-    glRotatef(angleSaturn, 0.0, 1.0, -1.0);
-    glTranslatef(-5.0, 0.0, 0.0);
-    glColor3f(0.9, 0.0, 0.0);
-    glScalef(0.4, 0.4, 0.4);
-    glutSolidSphere(1, 50, 50);
-    glPushMatrix();
-    glRotatef(45, 1.0, 0.0, 0.0);
-    glPointSize(3);
-    glColor3f(5.0, 3.0, 1.0);
-    glScalef(1.2, 1.2, 1.2);
-    glBegin(GL_POINTS);
-    double ang1 = 0.0;
-    i = 0;
-    for (i = 0; i < 50; i++)
-    {
-        glVertex2d(cos(ang1), sin(ang1));
-        ang1 += angular;
-    }
-    glEnd();
-
-    glPointSize(2);
-    glPopMatrix();//ring made
-    glPopMatrix();
-
-    glPushMatrix();
-    glRotatef(angleUranus, 0.0, 1.0, -0.5);
-    glTranslatef(5.2, 0.0, 0.0);
-    glColor3f(0.0, 0.5, 0.9);
-    glScalef(0.23, 0.23, 0.23);
-    glutSolidSphere(1, 50, 50);
-    glPopMatrix();
-
-    glPushMatrix();
-    glRotatef(angleNeptune, 0.0, 1.0, -0.5);
-    glTranslatef(-5.7, 0.0, 0.0);
-    glColor3f(0.0, 0.0, 0.9);
-    glScalef(0.2, 0.2, 0.2);
-    glutSolidSphere(1, 50, 50);
-    glPopMatrix();
-
-
     glPopMatrix();
     glFlush();
 }
@@ -243,7 +143,10 @@ void update(int value) {
     {
         sx -= 0.0003; sy -= 0.0003; sz -= 0.0003;
     }
-    else { sx += 0.0003; sy += 0.0003; sz += 0.0003; }
+    else
+    { 
+        sx += 0.0003; sy += 0.0003; sz += 0.0003;
+    }
 
 
     angleMoon += 2;
@@ -254,45 +157,6 @@ void update(int value) {
     if (angleEarth > 360) {
         angleEarth -= 360;
     }
-    angleMercury += 2;
-    if (angleMercury > 360) {
-        angleMercury -= 360;
-    }
-    angleVenus += 0.9;
-    if (angleVenus > 360) {
-        angleVenus -= 360;
-    }
-    angleMars += 0.5;
-    if (angleMars > 360) {
-        angleMars -= 360;
-    }
-    angleJupiter += 0.2;
-    if (angleJupiter > 360) {
-        angleJupiter -= 360;
-    }
-    angleSaturn += 0.1;
-    if (angleSaturn > 360) {
-        angleSaturn -= 360;
-    }
-
-
-    angleUranus += 0.05;
-    if (angleUranus > 360) {
-        angleUranus -= 360;
-    }
-
-
-    angleNeptune += 0.02;
-    if (angleNeptune > 360) {
-        angleNeptune -= 360;
-    }
-
-
-    angleAstroid += 0.002;
-    if (angleAstroid > 360) {
-        angleAstroid -= 360;
-    }
-
 
     glutPostRedisplay();
     glutTimerFunc(20, update, 0);
