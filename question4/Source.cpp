@@ -90,7 +90,7 @@ void draw(void)
 
     //making planet2
     glPushMatrix();
-    glColor3f(0, 3.0, 3.0);
+    glColor3f(3.0, 3.0, 8.0);
     glRotatef(anglePlanet2_sun, 0.0, 1.0, 0.0);
     glTranslatef(10 * cos(anglePlanet2_sun), 0, 8 * sin(anglePlanet2_sun));
     glRotatef(anglePlanet2, 0.0, 1.0, 0.0);
@@ -105,8 +105,8 @@ void draw(void)
     glColor3f(0.0, 0.1, 0.7);
     glutSolidSphere(3, 20, 30);
     glPushMatrix();
-    glRotatef(angleMoon_earth, 0.0, 0.0, 1.0);
-    glTranslatef(0.0, 0.0, 5.0);
+    glRotatef(angleMoon_earth, -1.0, 0.0, 0.0);//rotation around earth
+    glTranslatef(0.0, 5.0, 0.0);
     glRotatef(angleMoon_itself, 0.0, 1.0, 0.0);//rotate around itself
     glColor3f(1.0, 1.0, 1.0);
     glutSolidSphere(0.5, 20, 30);
