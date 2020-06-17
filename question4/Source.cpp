@@ -116,7 +116,7 @@ void draw(void)
 
 
 
-void update(int value) {
+void timer(int value) {
 
     angleSun += 1;
     angleEarth_sun += 1;
@@ -126,7 +126,7 @@ void update(int value) {
     anglePlanet2 += 3;
     anglePlanet2_sun -= 0.03;
     glutPostRedisplay();
-    glutTimerFunc(30, update, 0);
+    glutTimerFunc(30, timer, 0);
 }
 
 int main(int argc, char** argv)
@@ -139,7 +139,7 @@ int main(int argc, char** argv)
     initLighting();
     myinit();
     glutDisplayFunc(draw);
-    glutTimerFunc(30, update, 0);
+    glutTimerFunc(30, timer, 0);
     glutMainLoop();
     return 0;
 }

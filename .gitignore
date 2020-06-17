@@ -3,3 +3,5 @@
 ################################################################################
 
 *.opendb
+/question4/.vs/question4/v16/Browse.VC.db-shm
+/question4/.vs/question4/v16/Browse.VC.db-wal
