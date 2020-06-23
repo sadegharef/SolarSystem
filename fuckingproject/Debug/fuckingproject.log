@@ -1,6 +1,2 @@
 ﻿  Source.cpp
-C:\Users\sadeg\source\repos\ghasem24681357\fuckingproject\Source.cpp(107,37): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\sadeg\source\repos\ghasem24681357\fuckingproject\Source.cpp(109,38): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\sadeg\source\repos\ghasem24681357\fuckingproject\Source.cpp(110,36): warning C4305: 'argument': truncation from 'double' to 'float'
-C:\Users\sadeg\source\repos\ghasem24681357\fuckingproject\Source.cpp(113,32): warning C4305: 'argument': truncation from 'double' to 'GLfloat'
   fuckingproject.vcxproj -> C:\Users\sadeg\source\repos\ghasem24681357\fuckingproject\Debug\fuckingproject.exe
