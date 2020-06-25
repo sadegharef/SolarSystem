@@ -22,7 +22,7 @@ GLfloat black[] = { 0.0f, 0.0f, 0.0f, 0.1f };
 GLfloat white[] = { 0.0f, 1.0f, 1.0f, 1.0f };
 GLfloat blue[] = { 0.0f, 0.0f, 0.9f, 1.0f };
 GLfloat er[] = { 0.0f, 5.0f, 0.9f, 1.0f };
-GLfloat yellow[] = { 0.7f, 0.2f, 0.0f, .1f };
+GLfloat yellow[] = { 1.0f, 1.2f, 0.0f, 1.1f };
 GLfloat qAmb[] = { 0.1f, 0.1f, 0.1f, 0.5f };
 GLfloat qDif[] = { 1.0f, 1.0f, 1.0f, 0.5f };
 GLfloat qSpec[] = { .50f, .50f, .50f, 0.1f };
@@ -50,8 +50,8 @@ void myinit()
     glClearColor(0, 0, 0, 0);
     glShadeModel(GL_FLAT);
 
-    GLfloat light0_position[] = { -1.0, 1.0, 1.0, 0 }; // Light_0 position
-    glLightfv(GL_LIGHT7, GL_POSITION, light0_position); // Define Light_0 
+    GLfloat light7_position[] = { -1.0, 1.0, 1.0, 0 }; // Light_7 position
+    glLightfv(GL_LIGHT7, GL_POSITION, light7_position); // Define Light_7 
 
     glEnable(GL_LIGHTING); // Enable Lighting
     glEnable(GL_LIGHT7); // Enable Light_0
@@ -73,13 +73,13 @@ void draw(void)
 
     //making sun
     glPushMatrix();
-    glColor3f(6.0, 3.0, 0.0);//color
+    glColor3f(10.0, 10.0, 0.0);//color
     glRotatef(angleSun, 0.0, 1.0, 0.0);//rotation around itself
-    glutSolidSphere(5, 20, 25);//make with r=5
+    glutSolidSphere(5, 20, 20);//make with r=5
     glPopMatrix();
     //making planet2
     glPushMatrix();
-    glColor3f(3.0, 3.0, 8.0);//color
+    glColor3f(1.0, 1.0, 0.5);//color
     glRotatef(anglePlanet2_sun, 0.0, 1.0, 0.0);//rotation around the sun
     glTranslatef(10 * cos(anglePlanet2_sun), 0, 8 * sin(anglePlanet2_sun));// make the rotation path an Ellipse
     glRotatef(anglePlanet2, 0.0, 1.0, 0.0);//rotaton around itself
@@ -87,7 +87,7 @@ void draw(void)
     glPopMatrix();
     //make earth
     glPushMatrix();
-    glColor3f(.0, 0.1, 0.7);//color
+    glColor3f(.0, 0.3, 0.7);//color
     glRotatef(angleEarth_sun, 0.0, 1.0, 0.0);//rotation around the sun
     glTranslatef(15, 0.0, 0.0);// the circle path
     glRotatef(angleEarth_itself, 0.0, 1.0, 0.0);//rotation around itself
@@ -95,7 +95,7 @@ void draw(void)
     glPopMatrix();
     //make moon
     glPushMatrix();
-    glColor3f(3.0, 3.0, 8.0);//color
+    glColor3f(1.0, 1.0, 1.0);//color
     glRotatef(angleMoon_sun, 0.0, 1.0, 0.0);//rotation around sun
     glTranslatef(15, 0, 0);// distance from sun
     glRotatef(angleMoon_earth, 1.0, 0.0, -0.5);//around the earth
