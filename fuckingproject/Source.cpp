@@ -37,7 +37,7 @@ int factorial(int n)
         n = n * factorial(n - 1);
     return n;
 }
-//tartib k az n
+//tarkib k az n
 float binomial_coff(int n, float k)
 {
     float ans;
@@ -60,10 +60,12 @@ Point drawBezierGeneralized(Point PT[], float t) {
 }
 //define the init
 void myInit() {
+
     glClearColor(.0, .0, .0, 0.0);
     glColor3f(0.0, 0.0, 0.0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
+
     keyFrame[0].setxyz(0.0, 0.0, 3.0);
     keyFrame[1].setxyz(2.0, -2.5, 2.0);
     keyFrame[2].setxyz(0.0, 3.0, -3.0);
@@ -79,6 +81,13 @@ void myInit() {
         G[i] = p2;
         i++;
     }
+    //normalize the array G
+    //for (int k = 0; k < 52; k++)
+    //{
+      //  G[k].x= G[k].x / G[51].x;
+      //  G[k].y = G[k].y / G[51].y;
+      //  G[k].z = G[k].z / G[51].z;
+    //}
 }
 //drawing function
 int points = 0;
