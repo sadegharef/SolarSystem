@@ -47,11 +47,15 @@ void initLighting()
 }
 void myinit()
 {
-    glClearColor(0.0, 0.0, 0.0, 0.0); //backgroundcolor black
+    glClearColor(0, 0, 0, 0);
+    glShadeModel(GL_FLAT);
 
-   //init the point size and line size for belt **fail**
-   // glPointSize(1.0);
-   // glLineWidth(2.0);
+    GLfloat light0_position[] = { -1.0, 1.0, 1.0, 0 }; // Light_0 position
+    glLightfv(GL_LIGHT7, GL_POSITION, light0_position); // Define Light_0 
+
+    glEnable(GL_LIGHTING); // Enable Lighting
+    glEnable(GL_LIGHT7); // Enable Light_0
+    glEnable(GL_DEPTH_TEST); // Enable Depth
 
 }
 
@@ -60,8 +64,8 @@ void draw(void)
 {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     
-    glLoadIdentity();//load objects
-    glScalef(0.05, 0.05, 0.05);// scale the matrix that can be seen on screen
+    //glLoadIdentity();//load objects
+    //glScalef(0.05, 0.05, 0.05);// scale the matrix that can be seen on screen
     glEnable(GL_DEPTH_TEST);//enable depth
     glEnable(GL_COLOR_MATERIAL);//enable color
     
@@ -121,7 +125,19 @@ void timer(int value) {
     glutPostRedisplay();
     glutTimerFunc(30, timer, 0);
 }
-
+void reshape(int w, int h) {
+    // Projection
+    glViewport(0, 0, (GLsizei)w, (GLsizei)h);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(90, 1, 1.0, 40.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    //glTranslatef(x, y, z);
+    gluLookAt(0.0, 20.0, 10.0, // Camera position
+        0.0, 0.0, 0.0, // Point the Camera looks at
+        0.0, 1.0, 0.0); // Up-vector
+}
 int main(int argc, char** argv)
 {
     glutInit(&argc, argv);
@@ -133,6 +149,7 @@ int main(int argc, char** argv)
     myinit();
     glutDisplayFunc(draw);//draw the objects
     glutTimerFunc(30, timer, 0);// timer
+    glutReshapeFunc(reshape); // Projection
     glutMainLoop();
     return 0;
 }
