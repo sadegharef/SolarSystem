@@ -20,19 +20,10 @@ public:
         x = x2;
         y = y2;
     }
-    //operator overloading for '=' sign
-    const Point& operator=(const Point& rPoint)
-    {
-        x = rPoint.x;
-        y = rPoint.y;
-        z = rPoint.z;
-        return *this;
-    }
-
 };
 
 //define global variable
-Point abc[4];
+Point keyFrame[4];
 Point G[52];
 int keyframe = 4;
 //define cube point and cube angle
@@ -73,16 +64,16 @@ void myInit() {
     glColor3f(0.0, 0.0, 0.0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    abc[0].setxyz(0.0, 0.0, 3.0);
-    abc[1].setxyz(2.0, -2.5, 2.0);
-    abc[2].setxyz(0.0, 3.0, -3.0);
-    abc[3].setxyz(3.0, 0.0, 0.0);
+    keyFrame[0].setxyz(0.0, 0.0, 3.0);
+    keyFrame[1].setxyz(2.0, -2.5, 2.0);
+    keyFrame[2].setxyz(0.0, 3.0, -3.0);
+    keyFrame[3].setxyz(3.0, 0.0, 0.0);
    
     int i = 1;
-    G[0] = abc[0];
+    G[0] = keyFrame[0];
     for (float t = 0.0f; t <= 1.0f; t += 0.02f)
     {
-        Point p2 = drawBezierGeneralized(abc, t);
+        Point p2 = drawBezierGeneralized(keyFrame, t);
         cout << p2.x << ",  " << p2.y << ", " << p2.z << endl;
         cout << endl;
         G[i] = p2;
