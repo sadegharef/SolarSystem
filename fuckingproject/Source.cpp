@@ -22,8 +22,8 @@ public:
 };
 //define global variable
 Point keyFrame[4];
-Point bezierpoint[52];
-GLfloat G[52];
+Point bezierpoint[102];
+GLfloat G[102][2];
 int keyframe = 4;
 //factorial
 int factorial(int n)
@@ -56,8 +56,41 @@ Point drawBezierGeneralized(Point PT[], float t) {
     return P;
 }
 //array of distance
-GLfloat distance(Point a,Point b) {
-    return sqrtf(pow(b.x-a.x, 2) + pow(b.y-a.y, 2) + pow(b.z-a.z, 2));
+GLfloat distance(Point a, Point b) {
+    return sqrtf(pow(b.x - a.x, 2) + pow(b.y - a.y, 2) + pow(b.z - a.z, 2));
+}
+//init keyframe
+void makeKeyFrames() {
+    //init the keyframes
+    keyFrame[0].setxyz(0.0, 0.0, 3.0);
+    keyFrame[1].setxyz(2.0, -2.5, 2.0);
+    keyFrame[2].setxyz(0.0, 3.0, -3.0);
+    keyFrame[3].setxyz(3.0, 0.0, 0.0);
+}
+//make the arclenght table
+void makearclen() {
+    makeKeyFrames();
+    bezierpoint[0] = keyFrame[0];// init the first bezier point
+    G[0][0] = 0.0;//init firt element of arc lenght array
+    G[0][1] = 0.0;
+    int i = 1;
+    //init the bezier points and arc len array
+    for (float t = 0.0f; t <= 1.0f; t += 0.01f)
+    {
+        Point p2 = drawBezierGeneralized(keyFrame, t);
+        cout << p2.x << ",  " << p2.y << ", " << p2.z << endl;
+        cout << endl;
+        bezierpoint[i] = p2;// get the bezier point
+        G[i][0] = t;
+        G[i][1] = G[i - 1][1] + distance(bezierpoint[i], bezierpoint[i - 1]);//get the arc length array
+        i++;
+    }
+    //normalize the arc length array
+    for (int k = 0; k < 102; k++)
+    {
+        G[k][1] = G[k][1] / G[101][1];
+        cout << G[k][1] << endl;
+    }
 }
 //define the init
 void myInit() {
@@ -66,31 +99,8 @@ void myInit() {
     glColor3f(0.0, 0.0, 0.0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-    //init the keyframes
-    keyFrame[0].setxyz(0.0, 0.0, 3.0);
-    keyFrame[1].setxyz(2.0, -2.5, 2.0);
-    keyFrame[2].setxyz(0.0, 3.0, -3.0);
-    keyFrame[3].setxyz(3.0, 0.0, 0.0);
+    makearclen();
 
-    bezierpoint[0] = keyFrame[0];// init the first bezier point
-    G[0] = 0.0;//init firt element of arc lenght array
-    int i = 1;
-    //init the bezier points and arc len array
-    for (float t = 0.0f; t <= 1.0f; t += 0.02f)
-    {
-        Point p2 = drawBezierGeneralized(keyFrame, t);
-        cout << p2.x << ",  " << p2.y << ", " << p2.z << endl;
-        cout << endl;
-        bezierpoint[i] = p2;// get the bezier point
-        G[i] = G[i-1]+ distance(bezierpoint[i], bezierpoint[i-1]);//get the arc length array
-        i++;
-    }
-    //normalize the arc length array
-    for (int k = 0; k < 52; k++)
-    {
-        G[k] = G[k] / G[51];
-        cout << G[k] << endl;
-    }
 }
 //drawing function
 int points = 0;
@@ -107,45 +117,58 @@ void draw() {
     //flush
     glFlush();
 }
-//define constance speed
+//define constant speed
 void timer1(int v) {
     // Updata movement parameters
-    if (points == 51)
+    if (points == 101)
         return;
     points++;
     glutPostRedisplay();
     glutTimerFunc(100, timer1, 0);
 }
 //define the varible speed
+int acc = 0;
+int minuss = 0;
 void timer2(int v) {
     // Updata movement parameters
-    if (points == 51)
-        return;
-    points++;
+    if (acc <= 10) {
+        points += acc;
+        acc++;
+    }else
+        if (acc > 10 && acc < 30) {
+            points++;
+            acc++;
+        }else
+            if(acc>=30 && acc<40){
+                points -= minuss;
+                acc++;
+                minuss++;
+            }      
     glutPostRedisplay();
     glutTimerFunc(100, timer2, 0);
 }
 //on mouse click function
 void myMouse(int button, int state, int x, int y) {
-    // If left button was clicked
+    // If left button was clicked for constant speed
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
         glutTimerFunc(100, timer1, 0);
     }
+    // If right button was clicked for varible speed
     if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
-        
-        glutTimerFunc(300, timer2, 0);
+
+        glutTimerFunc(100, timer2, 0);
     }
 }
 //reshaping
 void reshape(int w, int h) {
-        glMatrixMode(GL_PROJECTION);
-        glLoadIdentity();
-        gluPerspective(atan(tan(50.0 * 3.14159 / 360.0) / 1.0) * 360.0 / 3.141593, 1.0, 3.0, 7.0);
-        glMatrixMode(GL_MODELVIEW);
-        glLoadIdentity();
-        gluLookAt(5.0, 2.0, 5.0,
-            0.0, 0.0, 0.0,
-            0.0, 1.0, 0.0);
+    glMatrixMode(GL_PROJECTION);
+    glLoadIdentity();
+    gluPerspective(atan(tan(50.0 * 3.14159 / 360.0) / 1.0) * 360.0 / 3.141593, 1.0, 3.0, 7.0);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    gluLookAt(5.0, 2.0, 5.0,
+        0.0, 0.0, 0.0,
+        0.0, 1.0, 0.0);
 }
 //main
 int main(int argc, char* argv[]) {
