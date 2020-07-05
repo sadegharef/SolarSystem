@@ -3,7 +3,6 @@
 #include <GL/glut.h>
 #include <math.h>
 using namespace std;
-
 //Point class for taking the points
 class Point
 {
@@ -21,13 +20,11 @@ public:
         y = y2;
     }
 };
-
 //define global variable
 Point keyFrame[4];
-Point G[52];
+Point bezierpoint[52];
+GLfloat G[52];
 int keyframe = 4;
-//define cube point and cube angle
-
 //factorial
 int factorial(int n)
 {
@@ -58,6 +55,10 @@ Point drawBezierGeneralized(Point PT[], float t) {
     }
     return P;
 }
+//array of distance
+GLfloat distance(Point a,Point b) {
+    return sqrtf(pow(b.x-a.x, 2) + pow(b.y-a.y, 2) + pow(b.z-a.z, 2));
+}
 //define the init
 void myInit() {
 
@@ -65,29 +66,31 @@ void myInit() {
     glColor3f(0.0, 0.0, 0.0);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
-
+    //init the keyframes
     keyFrame[0].setxyz(0.0, 0.0, 3.0);
     keyFrame[1].setxyz(2.0, -2.5, 2.0);
     keyFrame[2].setxyz(0.0, 3.0, -3.0);
     keyFrame[3].setxyz(3.0, 0.0, 0.0);
-   
+
+    bezierpoint[0] = keyFrame[0];// init the first bezier point
+    G[0] = 0.0;//init firt element of arc lenght array
     int i = 1;
-    G[0] = keyFrame[0];
+    //init the bezier points and arc len array
     for (float t = 0.0f; t <= 1.0f; t += 0.02f)
     {
         Point p2 = drawBezierGeneralized(keyFrame, t);
         cout << p2.x << ",  " << p2.y << ", " << p2.z << endl;
         cout << endl;
-        G[i] = p2;
+        bezierpoint[i] = p2;// get the bezier point
+        G[i] = G[i-1]+ distance(bezierpoint[i], bezierpoint[i-1]);//get the arc length array
         i++;
     }
-    //normalize the array G
-    //for (int k = 0; k < 52; k++)
-    //{
-      //  G[k].x= G[k].x / G[51].x;
-      //  G[k].y = G[k].y / G[51].y;
-      //  G[k].z = G[k].z / G[51].z;
-    //}
+    //normalize the arc length array
+    for (int k = 0; k < 52; k++)
+    {
+        G[k] = G[k] / G[51];
+        cout << G[k] << endl;
+    }
 }
 //drawing function
 int points = 0;
@@ -96,7 +99,7 @@ void draw() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     //first cube
     glPushMatrix();
-    glTranslatef(G[points].x, G[points].y, G[points].z);
+    glTranslatef(bezierpoint[points].x, bezierpoint[points].y, bezierpoint[points].z);
     glColor3f(1, 1, 1);
     glScalef(0.8f, 1.6f, 0.4f);
     glutSolidCube(.4);
@@ -105,38 +108,32 @@ void draw() {
     glFlush();
 }
 //define constance speed
-void timer(int v) {
+void timer1(int v) {
     // Updata movement parameters
     if (points == 51)
         return;
     points++;
-
     glutPostRedisplay();
-    glutTimerFunc(100, timer, 0);
+    glutTimerFunc(100, timer1, 0);
+}
+//define the varible speed
+void timer2(int v) {
+    // Updata movement parameters
+    if (points == 51)
+        return;
+    points++;
+    glutPostRedisplay();
+    glutTimerFunc(100, timer2, 0);
 }
 //on mouse click function
 void myMouse(int button, int state, int x, int y) {
     // If left button was clicked
     if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-        glutTimerFunc(100, timer, 0);
+        glutTimerFunc(100, timer1, 0);
     }
-}
-//define the variable speed
-void keyboard(unsigned char key, int x, int y)
-{
-
-    switch (key) {
-    case '1':
-        points++;
-        glutPostRedisplay();
-        break;
-
-    case '2':
-        points--;
-        glutPostRedisplay();
-        break;
-    default:
-        break;
+    if (button == GLUT_RIGHT_BUTTON && state == GLUT_DOWN) {
+        
+        glutTimerFunc(300, timer2, 0);
     }
 }
 //reshaping
@@ -150,7 +147,6 @@ void reshape(int w, int h) {
             0.0, 0.0, 0.0,
             0.0, 1.0, 0.0);
 }
-
 //main
 int main(int argc, char* argv[]) {
     glutInit(&argc, argv);
@@ -160,11 +156,9 @@ int main(int argc, char* argv[]) {
     glutCreateWindow("Bezier Curve");
 
     myInit();
-    glutKeyboardFunc(keyboard);
     glutMouseFunc(myMouse);
     glutDisplayFunc(draw);
     glutReshapeFunc(reshape);
-    
     glutMainLoop();
 
     return 0;
